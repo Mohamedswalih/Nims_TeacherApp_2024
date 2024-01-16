@@ -1,0 +1,71 @@
+{
+  "project_info": {
+    "project_number": "560185133261",
+    "project_id": "bm-teacherapp",
+    "storage_bucket": "bm-teacherapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:560185133261:android:0d5cb3cc68629940f84184",
+        "android_client_info": {
+          "package_name": "com.educore.bmteacher"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "560185133261-10cabiv4liohbs49mkg3s08g42tpuamf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.educore.bmteacher",
+            "certificate_hash": "55f42e09b985a3b62b46db450a2adea333f2f91a"
+          }
+        },
+        {
+          "client_id": "560185133261-9e992f4d0ijfvd9t8qo5e7orkeos3vqr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.educore.bmteacher",
+            "certificate_hash": "9ca99afef8fad2928a4050c756254aa800fd257d"
+          }
+        },
+        {
+          "client_id": "560185133261-qm6afc7td8efmpl5lo95joq9tl50fe9c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.educore.bmteacher",
+            "certificate_hash": "f0a14a7c126c3b82b5ef92b37b390856f2d61f2d"
+          }
+        },
+        {
+          "client_id": "560185133261-qvvu7lh3sp4dkv00cdq6qqg3vtsbi8hc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqUNnu3OaaOXVFc7iJEZoNBUU9TPvxjdM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "560185133261-qvvu7lh3sp4dkv00cdq6qqg3vtsbi8hc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "560185133261-8tb3lf9s1c7dkugv2ishnjunhli5ranr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.educore.bmteacher",
+                "app_store_id": "1626234971"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
