@@ -116,6 +116,8 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
   var rollidprefname;
   var selectedfocusofLW;
   bool showMessage = false;
+  bool _isDataEntered = false;
+  FocusNode _remarksFocus = FocusNode();
 
   getPreferenceData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -345,23 +347,23 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
       Map<String,dynamic> bdy = {
         "academic_year":academicyear,
         "school_id":schoolId,
-        "added_by":userId,
-        "added_date":DateTime.now().toString(),
+        "added_by":widget.userid,
+        "added_date":DateTime.now().toLocal().toString(),
         "session_id":widget.session_Id,
         "curriculum_id":widget.curriculam_Id,
         "class_id":widget.class_id,
         "batch_id":widget.division_id,
-        "teacher_id":widget.selectedteacher_Id ?? " " ,
-        "teacher_name":widget.selectedteacher_Name ?? " ",
-        "lw_focus":focusOfLearningwalkTextController.text.isEmpty ? " " : focusOfLearningwalkTextController.text,
-        "qs_to_puple":questionstoaskPupilsTextController.text.isEmpty ? " " : questionstoaskPupilsTextController.text,
-        "qs_to_teacher":questionstoaskTeachersTextController.text.isEmpty ? " " : questionstoaskTeachersTextController.text,
-        "what_went_well":whatwentwellTextController.text.isEmpty ? " " : whatwentwellTextController.text,
-        "even_better_if":evenbetterifTextController.text.isEmpty ? " " : evenbetterifTextController.text,
-        "sender_id":userId,
-        "observation_date" : DateTime.now().toString(),
+        "teacher_id":widget.selectedteacher_Id ?? "" ,
+        "teacher_name":widget.selectedteacher_Name ?? "",
+        "lw_focus":focusOfLearningwalkTextController.text.isEmpty ? "" : focusOfLearningwalkTextController.text,
+        "qs_to_puple":questionstoaskPupilsTextController.text.isEmpty ? "" : questionstoaskPupilsTextController.text,
+        "qs_to_teacher":questionstoaskTeachersTextController.text.isEmpty ? "" : questionstoaskTeachersTextController.text,
+        "what_went_well":whatwentwellTextController.text.isEmpty ? "" : whatwentwellTextController.text,
+        "even_better_if":evenbetterifTextController.text.isEmpty ? "" : evenbetterifTextController.text,
+        "sender_id":widget.userid,
+        "observation_date" : DateTime.now().toLocal().toString(),
         "observer_roles" :"${widget.role_id}",
-        "notes" : remarksTextController.text.isEmpty ? " " : remarksTextController.text,
+        "notes" : remarksTextController.text.isEmpty ? "" : remarksTextController.text,
         "app": true,
       };
       log("bbbbbooooddyyyyyyyylwsubmit--$bdy");
@@ -839,13 +841,14 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(
-                                left: 20.w, right: 20.w, top: 20.h),
+                                left: 35.w, right: 35.w, top: 20.h),
                             child: DropdownButtonFormField(
                               value: _focusoflwSelected,
                               isExpanded: true,
                               onChanged: (dynamic newVal) {
                                 setState(() {
                                   {
+                                    _isDataEntered = newVal.isNotEmpty;
                                     _focusoflwSelected = newVal;
                                     selectedfocusofLW = focusoflwData![int.parse(newVal)];
                                     print('selectedfocusofLW--------------------$selectedfocusofLW');
@@ -853,13 +856,13 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                   }
                                 });
                               },
-                              decoration: InputDecoration(
+                              decoration:
+                              InputDecoration(
                                   hintStyle: TextStyle(
-                                      color: Colors.black.withOpacity(0.5)),
+                                      color: Colors.black.withOpacity(0.5),fontSize: 15),
                                   contentPadding: EdgeInsets.symmetric(
                                       vertical: 15.0, horizontal: 20.0),
-                                  hintText: " ",
-                                  counterText: "",
+                                  hintText: "Select Focus Of Learning Walk",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(10.0),
@@ -889,7 +892,8 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                       .toString(),
                                   child: Text(
                                     // ''
-                                    '${item.toString()}', maxLines: 1,
+                                    '${item}',
+                                    maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     // maxLines: 1,
                                   ),
@@ -897,6 +901,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                               }).toList(),
                             ),
                           ),
+                          SizedBox(height: 10.h,),
                           Padding(
                             padding: EdgeInsets.only(
                                 right: 35.w, left: 35.w, top: 20.h),
@@ -904,13 +909,17 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                               controller: focusOfLearningwalkTextController,
                               maxLength: 1000,
                               validator: (val) => val!.isEmpty
-                                  ? '  *Focus of learning walk is required'
+                                  ? '  *Focus Of Learning Walk is required'
                                   : null,
                               decoration: InputDecoration(
                                   hintStyle: TextStyle(color: Colors.black26),
                                   contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10.0, horizontal: 20.0),
-                                  hintText: "Focus of learning walk",
+                                      vertical: 20.0, horizontal: 20.0),
+                                  hintText: focusOfLearningwalkTextController.text.isNotEmpty ? null : "Focus Of Learning Walk*",
+                                  label: focusOfLearningwalkTextController.text.isNotEmpty ? Padding(
+                                    padding: const EdgeInsets.only(bottom: 20),
+                                    child: Text('Focus Of Learning Walk*',style: TextStyle(fontWeight: FontWeight.w500),),
+                                  ) : null ,
                                   counterText: "$charLengthFocusoflearningwalk/1000",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(
@@ -954,6 +963,8 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                     setState(() {
                                       ischeck = value;
                                     });
+                                    questionstoaskTeachersTextController.clear();
+                                    questionstoaskPupilsTextController.clear();
                                   },
                                 ),
                                 Text('UnInterrupted CheckBox',style: TextStyle(fontWeight: FontWeight.w600),)
@@ -969,13 +980,17 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                 controller: questionstoaskPupilsTextController,
                                 maxLength: 1000,
                                 validator: (val) => val!.isEmpty
-                                    ? '  *Questions to ask pupils is required'
+                                    ? '  *Questions To Ask Pupils is required'
                                     : null,
                                 decoration: InputDecoration(
                                     hintStyle: TextStyle(color: Colors.black26),
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10.0, horizontal: 20.0),
-                                    hintText: "Questions to ask pupils",
+                                    hintText: questionstoaskPupilsTextController.text.isNotEmpty ? null : "Questions To Ask Pupils*",
+                                    label: questionstoaskPupilsTextController.text.isNotEmpty ? Padding(
+                                      padding: const EdgeInsets.only(bottom: 20),
+                                      child: Text('Questions To Ask Pupils*',style: TextStyle(fontWeight: FontWeight.w500),),
+                                    ) : null ,
                                     counterText: "$charLengthQuestiontoaskpupils/1000",
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
@@ -999,7 +1014,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                     fillColor: Color.fromRGBO(230, 236, 254, 8),
                                     filled: true),
                                 maxLines: 5,
-                                onChanged: _onChangedQuestiontoaskpupils,
+                                onChanged: _onChangedQuestiontoaskpupils
                               ),
                             ),
                           ),
@@ -1012,13 +1027,18 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                 controller: questionstoaskTeachersTextController,
                                 maxLength: 1000,
                                 validator: (val) => val!.isEmpty
-                                    ? '  *Questions to ask teachers is required'
+                                    ? '  *Questions To Ask Teachers is required'
                                     : null,
+
                                 decoration: InputDecoration(
                                     hintStyle: TextStyle(color: Colors.black26),
                                     contentPadding: EdgeInsets.symmetric(
                                         vertical: 10.0, horizontal: 20.0),
-                                    hintText: "Questions to ask teachers",
+                                    hintText: questionstoaskTeachersTextController.text.isNotEmpty ? null : "Questions To Ask Teachers*",
+                                    label: questionstoaskTeachersTextController.text.isNotEmpty ? Padding(
+                                      padding: const EdgeInsets.only(bottom: 20),
+                                      child: Text('Questions To Ask Teachers*',style: TextStyle(fontWeight: FontWeight.w500),),
+                                    ) : null ,
                                     counterText: "$charLengthquestiontoaskTeacher/1000",
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
@@ -1053,13 +1073,18 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                               controller: whatwentwellTextController,
                               maxLength: 1000,
                               validator: (val) => val!.isEmpty
-                                  ? '  *What went well is required'
+                                  ? '  *What Went Well is required'
                                   : null,
+
                               decoration: InputDecoration(
                                   hintStyle: TextStyle(color: Colors.black26),
                                   contentPadding: EdgeInsets.symmetric(
                                       vertical: 10.0, horizontal: 20.0),
-                                  hintText: " What went well   ",
+                                  hintText: whatwentwellTextController.text.isNotEmpty ? null : "What Went Well*",
+                                  label: whatwentwellTextController.text.isNotEmpty ? Padding(
+                                    padding: const EdgeInsets.only(bottom: 20),
+                                    child: Text('What Went Well*',style: TextStyle(fontWeight: FontWeight.w500),),
+                                  ) : null ,
                                   counterText: "$charLengthwhatwentwell/1000",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(
@@ -1093,13 +1118,19 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                               controller: evenbetterifTextController,
                               maxLength: 1000,
                               validator: (val) => val!.isEmpty
-                                  ? '  *Even better if is required'
+                                  ? '  *Even Better If is required'
                                   : null,
+
                               decoration: InputDecoration(
                                   hintStyle: TextStyle(color: Colors.black26),
                                   contentPadding: EdgeInsets.symmetric(
                                       vertical: 10.0, horizontal: 20.0),
-                                  hintText: " Even better if   ",
+                                  hintText: evenbetterifTextController.text.isNotEmpty ? null : "Even Better If*",
+                                  label: evenbetterifTextController.text.isNotEmpty ? Padding(
+                                    padding: const EdgeInsets.only(bottom: 20),
+                                    child: Text('Even Better If*',style: TextStyle(fontWeight: FontWeight.w500),),
+                                  ) : null ,
+                                  // labelText: _isDataEntered ? 'Even better if' : 'Even better if',
                                   counterText: "$charLengthevenbettrif/1000",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(
@@ -1126,17 +1157,24 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                               onChanged: _onChangedevenbetterif,
                             ),
                           ),
+
                           Padding(
                             padding: EdgeInsets.only(
                                 right: 35.w, left: 35.w, top: 20.h),
                             child: TextFormField(
                               controller: remarksTextController,
+                              focusNode: _remarksFocus,
                               maxLength: 1000,
+
                               decoration: InputDecoration(
                                   hintStyle: TextStyle(color: Colors.black26),
                                   contentPadding: EdgeInsets.symmetric(
                                       vertical: 10.0, horizontal: 20.0),
-                                  hintText: " Remarks   ",
+                                  hintText: remarksTextController.text.isNotEmpty ? null : "Remarks",
+                                  label: remarksTextController.text.isNotEmpty ? Padding(
+                                    padding: const EdgeInsets.only(bottom: 20),
+                                    child: Text('Remarks',style: TextStyle(fontWeight: FontWeight.w500),),
+                                  ) : null ,
                                   counterText: "$charLengthremarks/1000",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(
@@ -1163,42 +1201,41 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                               onChanged: _onChangedremarks,
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(35, 20, 35, 0),
-                            child: GestureDetector(
-                              onTap: () async {
-                               if (_formKey.currentState!.validate()) {
+                          SizedBox(height: 10,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                 if (_formKey.currentState!.validate()) {
 
-                                 print('function submit');
-                                 // if (isvalid) {
-                                 var connectivityResult = await (Connectivity()
-                                     .checkConnectivity());
-                                 if (connectivityResult ==
-                                     ConnectivityResult.none) {
-                                   {
-                                     //getLessonData();
-                                     await addNote();
-                                     // _submitedSuccessfully(context);
-                                     focusOfLearningwalkTextController.clear();
-                                     questionstoaskPupilsTextController.clear();
-                                     questionstoaskTeachersTextController.clear();
-                                     whatwentwellTextController.clear();
-                                     evenbetterifTextController.clear();
-                                     remarksTextController.clear();
+                                   print('function submit');
+                                   // if (isvalid) {
+                                   var connectivityResult = await (Connectivity()
+                                       .checkConnectivity());
+                                   if (connectivityResult ==
+                                       ConnectivityResult.none) {
+                                     {
+                                       //getLessonData();
+                                       await addNote();
+                                       // _submitedSuccessfully(context);
+                                       focusOfLearningwalkTextController.clear();
+                                       questionstoaskPupilsTextController.clear();
+                                       questionstoaskTeachersTextController.clear();
+                                       whatwentwellTextController.clear();
+                                       evenbetterifTextController.clear();
+                                       remarksTextController.clear();
+                                     }
+                                   } else {
+                                     SubmitRequest();
                                    }
                                  } else {
-                                   SubmitRequest();
+                                   print('Validation not success');
                                  }
-                               } else {
-                                 print('Validation not success');
-                               }
-                              },
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 55, right: 55),
+                                },
                                 child: Container(
                                   height: 60.h,
-                                  // width: 180.w,
+                                  width: 100.w,
                                   decoration: BoxDecoration(
                                       color: Color(0xff42C614),
                                       borderRadius: BorderRadius.circular(10)),
@@ -1210,8 +1247,28 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                   )),
                                 ),
                               ),
-                            ),
+                              SizedBox(width: 10,),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Container(
+                                    height: 60.h,
+                                    width: 100.w,
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(10)),
+                                    child: Center(
+                                      child: Text(
+                                        'Cancel',
+                                          style: TextStyle(
+                                              fontSize: 18, color: Colors.white)
+                                      ),
+                                    )),
+                              ),
+                            ],
                           ),
+
                           SizedBox(
                             height: 180.h,
                           )
@@ -1308,22 +1365,22 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
     academic_year:academicyear,
     school_id:schoolId,
     added_by:userId,
-    added_date:DateTime.now().toString(),
+    added_date:DateTime.now().toLocal().toString(),
     session_id:widget.session_Id,
     curriculum_id:widget.curriculam_Id,
     class_id:widget.class_id,
     batch_id:widget.division_id,
-    teacher_id:widget.selectedteacher_Id ?? " ",
-    teacher_name:widget.selectedteacher_Name ?? " ",
-    lw_focus:focusOfLearningwalkTextController.text.isEmpty ? " " : focusOfLearningwalkTextController.text,
-    qs_to_puple:questionstoaskPupilsTextController.text.isEmpty ? " " : questionstoaskPupilsTextController.text,
-    qs_to_teacher:questionstoaskTeachersTextController.text.isEmpty ? " " : questionstoaskTeachersTextController.text,
-    what_went_well:whatwentwellTextController.text.isEmpty ? " " : whatwentwellTextController.text,
-    even_better_if:evenbetterifTextController.text.isEmpty ? " " : evenbetterifTextController.text,
+    teacher_id:widget.selectedteacher_Id ?? "",
+    teacher_name:widget.selectedteacher_Name ?? "",
+    lw_focus:focusOfLearningwalkTextController.text.isEmpty ? "" : focusOfLearningwalkTextController.text,
+    qs_to_puple:questionstoaskPupilsTextController.text.isEmpty ? "" : questionstoaskPupilsTextController.text,
+    qs_to_teacher:questionstoaskTeachersTextController.text.isEmpty ? "" : questionstoaskTeachersTextController.text,
+    what_went_well:whatwentwellTextController.text.isEmpty ? "" : whatwentwellTextController.text,
+    even_better_if:evenbetterifTextController.text.isEmpty ? "" : evenbetterifTextController.text,
     sender_id:userId,
-    observation_date : DateTime.now().toString(),
+    observation_date : DateTime.now().toLocal().toString(),
     observer_roles :"${widget.role_id}",
-    notes : remarksTextController.text.isEmpty ? "NO DATA" : remarksTextController.text,
+    notes : remarksTextController.text.isEmpty ? "" : remarksTextController.text,
     app: 1,
     );
       await NotesDatabase.instance.create(note);

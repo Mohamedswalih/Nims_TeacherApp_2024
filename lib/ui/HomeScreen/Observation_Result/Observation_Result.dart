@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../Network/api_constants.dart';
 import '../../../Utils/color_utils.dart';
 import '../../Leadership/Leadership.dart';
+import 'NewLearningWalk_ObservationResult.dart';
 class observationResult extends StatefulWidget {
   var loginedUserName;
   String? images;
@@ -132,6 +133,10 @@ class _observationResultState extends State<observationResult> {
     // print('------------api response---------------$response');
     ObservationData = response;
     ObservationDataList = response['data']['details'];
+    // if(response['data']['details'])
+    // for(int i = 0;i<ObservationDataList.length;i++){
+    //   if(ObservationDataList[i]['type'] == 'LW_NEW' )
+    // }
     print('------------api response---------------$ObservationData');
     print('------------ObservationDataList---------------$ObservationDataList');
     if (ObservationDataList.isEmpty ) {
@@ -290,14 +295,18 @@ class _observationResultState extends State<observationResult> {
                             itemCount: ObservationDataList.length,
                             shrinkWrap: true,
                             itemBuilder: (BuildContext context, int index) {
-                              return _resultlist(
+                              return
+                              // ObservationDataList[index]['type'] != 'LW_NEW'?
+                                _resultlist(
                                 observer_name: ObservationDataList[index]
                                 ['observer_name'],
                                 date_of_observation: ObservationDataList[index]['date_of_observation'],
                                 subject_name: ObservationDataList[index]['subject_name'],
                                 id: ObservationDataList[index]['_id'],
                                 type: capitalizeFirstLetters(ObservationDataList[index]['type'].toString().replaceAll('_', ' ')),
-                              );
+                              )
+                              // :null
+                               ;
                             },
 
                           ),
@@ -345,12 +354,24 @@ class _observationResultState extends State<observationResult> {
     String? id,
     String? type,
   }) =>
+
+
       InkWell(
         onTap: (){
           print('ontapped');
+          print('type----$type');
           NavigationUtils.goNext(
               context,
+              type != 'Lw New' ?
               resultPage(
+                name: widget.name,
+                images: widget.images,
+                loginedUserName: widget.loginedUserName,
+                Subject_name: subject_name,
+                Doneby: observer_name,
+                Date: date_of_observation,
+                Observerid: id,
+              ): newLearningwalkResultpage(
                 name: widget.name,
                 images: widget.images,
                 loginedUserName: widget.loginedUserName,
@@ -363,7 +384,7 @@ class _observationResultState extends State<observationResult> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            height: 150.h,
+            height: 160.h,
             // width: 350.w,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -395,7 +416,9 @@ class _observationResultState extends State<observationResult> {
                             // ),
                           ),
                           child: Center(
-                            child: CachedNetworkImage(
+                            child:
+                            type != 'Lw New' ?
+                            CachedNetworkImage(
                               imageUrl:
                               ApiConstants.IMAGE_BASE_URL + "${IMAGE}",
                               placeholder: (context, url) => Text(
@@ -414,7 +437,11 @@ class _observationResultState extends State<observationResult> {
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20),
                               ),
-                            ),
+                            ):Text('LW',
+                                style: TextStyle(
+                                    color: Color(0xFFB1BFFF),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20))
                           ),
                         ),
                       ),
@@ -427,11 +454,14 @@ class _observationResultState extends State<observationResult> {
 
                           Container(
                               width: 240.w,
-                              child: Text(
+                              child:
+                                  subject_name != null ?
+                              Text(
                                 subject_name!,
                                 // 'Subject',
                                 style: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.w700),
-                              )),
+                              ) : Text(''),
+                          ),
                           SizedBox(
                             height: 10.h,
                           ),
@@ -446,7 +476,7 @@ class _observationResultState extends State<observationResult> {
                                     style: TextStyle(fontSize: 15.sp,fontWeight: FontWeight.w500),
                                   ),
                                   Container(
-                                    width: 200.w,
+                                    width: 190.w,
                                     child: Text(
                                       '${observer_name!}',
                                       // 'Observer',
@@ -460,7 +490,8 @@ class _observationResultState extends State<observationResult> {
                           ),
                           Container(
                               width: 240.w,
-                              child: Text(
+                              child:
+                              Text(
                                 // date_of_observation!,
                                 'on: ${date_of_observation!.split('T')[0].split('-').last}-${date_of_observation.split('T')[0].split('-')[1]}-${date_of_observation.split('T')[0].split('-').first}',
                                 // 'Date',

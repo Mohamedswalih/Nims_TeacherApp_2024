@@ -33,10 +33,11 @@ class ApiConstants {
   static String NotificationEnd = "/educore";
   static String Observationlist = "https://teamsqa3000.educore.guru/v0/learning-observation/get/userSubmissions";
   static String ObservationResultlist = "https://teamsqa3000.educore.guru/v0/learning-observation/submissionView/";
+  static String NewLearningWalkObservationResultlist = "https://teamsqa3000.educore.guru/v0/teacher/app/lwnew";
   static String ObservationResultSubmitLessonObservation = "https://teamsqa3000.educore.guru/v0/lesson-observation/addTeacherCmnt";
   static String ObservationResultSubmitLearningWalk = "https://teamsqa3000.educore.guru/v0/learning-walk/addTeacherCmnt";
   static String DeviceId = "https://teamsqa3000.educore.guru/v0/educare/add/login_tracker_teacherapp";
-  static String Version = "1.3.0";
+  static String Version = "1.3.3";
 
   //Live API URL
   // static String DOCME_URL = "https://bmark.nimsuae.com/api/App";
@@ -62,7 +63,7 @@ class ApiConstants {
   // static String LearningWalkdivisionList = "https://nims3000.educore.guru/v0/get/batches";
   // static String LearningWalkTeacherList = "https://nims3000.educore.guru/v0/get/teachers";
   // static String FocusOfLearningWalk = "https://nims3000.educore.guru/v0/get/user/lw_focus";
-  // static String LearningWalkSUbmit = "https://nims3000.educore.guru/v2/learning_walk/submit_evaluation";
+  // static String LearningWalkSUbmit = "https://nims3000.educore.guru/v0/submit/lw";
   // static String LeaveApproval = "https://nims3000.educore.guru/v0/get/leave/teacher/list";
   // static String LeaveApprovalRequest = "https://nims3000.educore.guru/v0/update/leave";
   // static String LeaveRequestList = "https://nims3000.educore.guru/v0/get/classteacher/student/list/";
@@ -72,8 +73,9 @@ class ApiConstants {
   // static String NotificationEnd = "/educore";
   // static String Observationlist = "https://nims3000.educore.guru/v0/learning-observation/get/userSubmissions";
   // static String ObservationResultlist = "https://nims3000.educore.guru/v0/learning-observation/submissionView/";
+  // static String NewLearningWalkObservationResultlist = "https://nims3000.educore.guru/v0/teacher/app/lwnew";
   // static String ObservationResultSubmitLessonObservation = "https://nims3000.educore.guru/v0/lesson-observation/addTeacherCmnt";
   // static String ObservationResultSubmitLearningWalk = "https://nims3000.educore.guru/v0/learning-walk/addTeacherCmnt";
   // static String DeviceId = "https://nims3000.educore.guru/v0/educare/add/login_tracker_teacherapp";
-  // static String Version = "1.3.0";
+  // static String Version = "1.3.3";
 }

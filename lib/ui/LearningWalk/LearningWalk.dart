@@ -200,7 +200,9 @@ class _learningWalkState extends State<learningWalk> {
       if (response.statusCode == 200) {
         var resp = await response.stream.bytesToString();
         var decodedresp = json.decode(resp);
+
         divisionData = decodedresp['data']['details'];
+        divisionData!.sort((a, b) => a['name'].compareTo(b['name']));
         log('---------batchData--${divisionData}');
 
         setState(() {
@@ -268,6 +270,8 @@ class _learningWalkState extends State<learningWalk> {
         var resp = await response.stream.bytesToString();
         var decodedresp = json.decode(resp);
         teacherData = decodedresp['data']['details'];
+        teacherData!.sort((a, b) => a['name'].compareTo(b['name']));
+        // teacherData!.sort((a, b) => a['name'].toString().split(' ')[1].compareTo(b['name'].toString().split(' ')[1]));
         log('---------teacherData--${teacherData}');
 
         setState(() {
@@ -498,7 +502,7 @@ class _learningWalkState extends State<learningWalk> {
                               left: 20.w, right: 20.w, top: 20.h),
                           child: DropdownButtonFormField(
                             validator: (dynamic value) =>
-                                value == null ? 'Field Required' : null,
+                                value == null ? 'Class is required' : null,
                             value: _teacherClassSelected,
                             isExpanded: true,
                             onChanged: (dynamic newVal) {
@@ -558,7 +562,7 @@ class _learningWalkState extends State<learningWalk> {
                               left: 20.w, right: 20.w, top: 20.h),
                           child: DropdownButtonFormField(
                             validator: (dynamic value) =>
-                                value == null ? 'Field Required' : null,
+                                value == null ? 'Division is required' : null,
                             value: _teacherBatchSelected,
                             isExpanded: true,
                             onChanged: (dynamic newVal) {

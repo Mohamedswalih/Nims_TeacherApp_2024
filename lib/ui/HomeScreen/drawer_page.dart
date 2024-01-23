@@ -1096,7 +1096,7 @@ class _DrawerPageState extends State<DrawerPage> {
           academic_year: widget.academic_year,
           // notclassteacher:isnotaclassteacher,
         );
-      case TeacherItems.ObservatioResult:
+      case MenuItems.ObservatioResult:
         return  observationResult(
           loginedUserName: widget.loginedUserName,
           images: widget.images,

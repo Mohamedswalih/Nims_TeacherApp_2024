@@ -577,10 +577,13 @@ class _LeadershipListViewState extends State<LeadershipListView> {
                             children: [
                               Text('Leadership',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),),
                               widget.HOSNAME != null ?
-                              Text(
-                                'Hos: ${widget.HOSNAME}',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500,color: Colors.blueAccent),
+                              Container(
+                                width: 220.w,
+                                child: Text(
+                                  'Hos: ${widget.HOSNAME}',
+                                  style: TextStyle(
+                                      fontSize: 16, fontWeight: FontWeight.w500,color: Colors.blueAccent),
+                                ),
                               ):Container()
                             ],
                           ),
