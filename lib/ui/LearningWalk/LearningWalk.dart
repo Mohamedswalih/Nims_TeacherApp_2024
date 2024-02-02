@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Network/api_constants.dart';
 import '../../Utils/color_utils.dart';
+import '../Leadership/LearningWalk_Model.dart';
 import 'learningwalk2.dart';
 
 class learningWalk extends StatefulWidget {
@@ -36,17 +37,19 @@ class learningWalk extends StatefulWidget {
   final String? user_roleid;
   String? Subjectid;
   String? session_id;
-  String? curiculam_id;
   // List<dynamic>? teacherData;
   List<dynamic>? observationDataa;
   Map<String, dynamic>? learningData;
   bool? admin;
+  Learningwalknew? learningwalknew;
+  List<dynamic> loginRoleid;
   learningWalk(
       {Key? key,
       this.role_id,
       this.loginname,
       this.admin,
       this.schoolid,
+      required this.loginRoleid,
       this.observationDataa,
       this.user_roleid,
       this.main_user,
@@ -60,6 +63,7 @@ class learningWalk extends StatefulWidget {
       this.teachername,
       this.class_batchName,
       this.roleUnderLoginTeacher,
+      this.learningwalknew,
       // this.teacherData,
       this.Subjectid})
       : super(key: key);
@@ -97,197 +101,6 @@ class _learningWalkState extends State<learningWalk> {
       count = preferences.get("count");
       print('notification count---->${preferences.get("count")}');
     });
-  }
-  List<dynamic>? classData;
-
-  getClassData() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    academic_year = preferences.getString('academic_year');
-    school_id = preferences.getString('school_id');
-    setState(() {
-      isSpinner = true;
-    });
-
-    var result = await Connectivity().checkConnectivity();
-    if (result == ConnectivityResult.none) {
-      print('no internet');
-      // _checkInternet(context);
-      setState(() {
-        isSpinner = false;
-      });
-    } else {
-
-      var headers = {
-        'x-auth-token': 'tq355lY3MJyd8Uj2ySzm',
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      };
-      var request = http.Request('POST', Uri.parse(ApiConstants.LearningWalkClassList));
-      request.body =
-          json.encode({"user_id": widget.userid, "academic_year": academic_year,"school_id":school_id});
-      request.headers.addAll(headers);
-
-      print('---------LearnigWalkClassData--body--${request.body}');
-
-      http.StreamedResponse response = await request.send();
-
-      print('---------LearnigWalkClassData--statusCode--${response.statusCode}');
-      if (response.statusCode == 200) {
-        var resp = await response.stream.bytesToString();
-        var decodedresp = json.decode(resp);
-        classData = decodedresp['data']['details'];
-        log('---------classData--${classData}');
-
-        setState(() {
-          isSpinner = false;
-        });
-      } else {
-        setState(() {
-          isSpinner = false;
-        });
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Something went wrong')));
-      }
-      //print(await response.stream.bytesToString());
-
-    }
-
-
-
-
-  }
-  List<dynamic>? divisionData;
-  getdivisionData({required List classSessionId, required List classCurriculumId}) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    academic_year = preferences.getString('academic_year');
-    school_id = preferences.getString('school_id');
-    setState(() {
-      isSpinner = true;
-    });
-
-    var result = await Connectivity().checkConnectivity();
-    if (result == ConnectivityResult.none) {
-      print('no internet');
-      // _checkInternet(context);
-      setState(() {
-        isSpinner = false;
-      });
-    } else {
-
-      var headers = {
-        'x-auth-token': 'tq355lY3MJyd8Uj2ySzm',
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      };
-      var request = http.Request('POST', Uri.parse(ApiConstants.LearningWalkdivisionList));
-      request.body =
-          json.encode({
-            "school_id": school_id,
-            "academic_year": academic_year,
-            "user_id": widget.userid,
-            "admin": widget.admin,
-            "class_id": class_id,
-            "session": classSessionId,
-            "curriculum": classCurriculumId
-          });
-      request.headers.addAll(headers);
-
-      print('---------LearnigWalkBatchData--body--${request.body}');
-
-      http.StreamedResponse response = await request.send();
-
-      print('---------LearnigWalkBatchData--statusCode--${response.statusCode}');
-      if (response.statusCode == 200) {
-        var resp = await response.stream.bytesToString();
-        var decodedresp = json.decode(resp);
-
-        divisionData = decodedresp['data']['details'];
-        divisionData!.sort((a, b) => a['name'].compareTo(b['name']));
-        log('---------batchData--${divisionData}');
-
-        setState(() {
-          isSpinner = false;
-        });
-      } else {
-        setState(() {
-          isSpinner = false;
-        });
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Something went wrong')));
-      }
-      //print(await response.stream.bytesToString());
-
-    }
-
-
-
-
-  }
-
-  List<dynamic>? teacherData;
-  getTeacherData({required String divisionid, required String divisionSessionId, required String divisionCurriculumId}) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    academic_year = preferences.getString('academic_year');
-    school_id = preferences.getString('school_id');
-    setState(() {
-      isSpinner = true;
-    });
-
-    var result = await Connectivity().checkConnectivity();
-    if (result == ConnectivityResult.none) {
-      print('no internet');
-      // _checkInternet(context);
-      setState(() {
-        isSpinner = false;
-      });
-    } else {
-
-      var headers = {
-        'x-auth-token': 'tq355lY3MJyd8Uj2ySzm',
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      };
-      var request = http.Request('POST', Uri.parse(ApiConstants.LearningWalkTeacherList));
-      request.body =
-          json.encode({
-              "school_id": school_id,
-              "academic_year": academic_year,
-              "user_id": widget.userid,
-              "admin": widget.admin,
-              "class_id": class_id,
-              "batch_id": divisionid,
-              "curriculum_id": divisionCurriculumId,
-              "session_id": divisionSessionId,
-          });
-      request.headers.addAll(headers);
-
-      print('---------LearnigWalkTeacherData--body--${request.body}');
-
-      http.StreamedResponse response = await request.send();
-
-      print('---------LearnigWalkTeacherData--statusCode--${response.statusCode}');
-      if (response.statusCode == 200) {
-        var resp = await response.stream.bytesToString();
-        var decodedresp = json.decode(resp);
-        teacherData = decodedresp['data']['details'];
-        teacherData!.sort((a, b) => a['name'].compareTo(b['name']));
-        // teacherData!.sort((a, b) => a['name'].toString().split(' ')[1].compareTo(b['name'].toString().split(' ')[1]));
-        log('---------teacherData--${teacherData}');
-
-        setState(() {
-          isSpinner = false;
-        });
-      } else {
-        setState(() {
-          isSpinner = false;
-        });
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Something went wrong')));
-      }
-      //print(await response.stream.bytesToString());
-
-    }
-
   }
 
 
@@ -343,7 +156,6 @@ class _learningWalkState extends State<learningWalk> {
         '---------------roleUnderLoginTeacher lw----${widget.roleUnderLoginTeacher}');
     // datas();
     getdata();
-    getClassData();
     getNotification();
     timer =
         Timer.periodic(Duration(seconds: 1), (Timer t) => getPreferenceData());
@@ -357,10 +169,35 @@ class _learningWalkState extends State<learningWalk> {
   Object? _teacherListSelected;
   Object? _teacherClassSelected;
   Object? _teacherBatchSelected;
+  List<Response>? classDetails;
+  List<Batches>? divisionDetails;
+  List<Teachers>? teacherDetails;
 
   int? _teacherListSelectedIndex;
   int? _teacherClassSelectedIndex;
   getdata() {
+    print("-----gcnhcfgnh------${widget.learningwalknew!.status!.message}");
+    if(widget.learningwalknew!.data!.details!.response != null){
+      classDetails = widget.learningwalknew!.data!.details!.response;
+      classDetails!.sort((a, b) {
+        // Convert names to lowercase for case-insensitive sorting
+        final aLower = a.name!.toLowerCase();
+        final bLower = b.name!.toLowerCase();
+
+        // Check if both names are numeric
+        bool isANumeric = double.tryParse(aLower) != null;
+        bool isBNumeric = double.tryParse(bLower) != null;
+
+        if (isANumeric && isBNumeric) {
+          // If both are numeric, compare as numbers
+          return double.parse(aLower).compareTo(double.parse(bLower));
+        } else {
+          // If at least one is not numeric, compare lexicographically
+          return aLower.compareTo(bLower);
+        }
+      });
+    }
+
     // print(widget.teacherData);
     // print(widget.teacherData![0]['teacher_name']);
     //teacherName = widget.teacherData![0]['teacher_name'];
@@ -501,18 +338,29 @@ class _learningWalkState extends State<learningWalk> {
                           padding: EdgeInsets.only(
                               left: 20.w, right: 20.w, top: 20.h),
                           child: DropdownButtonFormField(
+                            onTap: (){
+                              setState(() {
+                                _teacherBatchSelected = null;
+                                _teacherListSelected = null;
+                              });
+                            },
                             validator: (dynamic value) =>
                                 value == null ? 'Class is required' : null,
                             value: _teacherClassSelected,
                             isExpanded: true,
                             onChanged: (dynamic newVal) {
-                              setState(() {
-                              _teacherClassSelected = newVal;
-                              class_id = classData![int.parse(newVal)]['_id'];
-                              class_name = classData![int.parse(newVal)]['name'];
-                              });
                               print('-------newVal$newVal');
-                               getdivisionData( classSessionId: classData![int.parse(newVal)]['session_ids'], classCurriculumId: classData![int.parse(newVal)]['curriculum_ids']);
+                              setState(() {
+                                // divisionDetails = null;
+                              _teacherClassSelected = newVal;
+                              class_id = classDetails![int.parse(newVal)].sId;
+                              class_name = classDetails![int.parse(newVal)].name;
+                              divisionDetails = classDetails![int.parse(newVal)].batches;
+                              divisionDetails!.sort((a, b) => a.batch!.compareTo(b.batch!));
+                              });
+
+                              print('-------newVal$newVal');
+                               // getdivisionData( classSessionId: classData![int.parse(newVal)]['session_ids'], classCurriculumId: classData![int.parse(newVal)]['curriculum_ids']);
                             },
                             decoration: InputDecoration(
                                 hintStyle: TextStyle(
@@ -542,14 +390,14 @@ class _learningWalkState extends State<learningWalk> {
                                 ),
                                 fillColor: Color.fromRGBO(230, 236, 254, 8),
                                 filled: true),
-                            items:classData == null ? null : classData!
+                            items:classDetails == null ? null : classDetails!
                                     .map<DropdownMenuItem<String>>((item) {
                                     return DropdownMenuItem<String>(
-                                      value: classData!
+                                      value: classDetails!
                                           .indexOf(item)
                                           .toString(),
                                       child: Text(
-                                        ('Class: ${item['name']}'),
+                                        ('Class: ${item.name}'),
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                       ),
@@ -561,6 +409,12 @@ class _learningWalkState extends State<learningWalk> {
                           padding: EdgeInsets.only(
                               left: 20.w, right: 20.w, top: 20.h),
                           child: DropdownButtonFormField(
+                            onTap: (){
+                              setState(() {
+
+                                _teacherListSelected = null;
+                              });
+                            },
                             validator: (dynamic value) =>
                                 value == null ? 'Division is required' : null,
                             value: _teacherBatchSelected,
@@ -569,13 +423,16 @@ class _learningWalkState extends State<learningWalk> {
                               setState(() {
                                 {
                                   _teacherBatchSelected = newVal;
-                                  division_id =  divisionData![int.parse(newVal)]['_id'];
-                                  division_name =  divisionData![int.parse(newVal)]['name'];
-                                  curiculam_id = divisionData![int.parse(newVal)]['curriculum'];
-                                  session_id = divisionData![int.parse(newVal)]['session'];
+                                  teacherDetails = divisionDetails![int.parse(newVal)].teachers;
+                                  teacherDetails!.sort((a, b) => a.name!.compareTo(b.name!));
+                                  division_id =  divisionDetails![int.parse(newVal)].batchId;
+                                  division_name =  divisionDetails![int.parse(newVal)].batch;
+                                  curiculam_id = divisionDetails![int.parse(newVal)].curriculumId;
+                                  session_id = divisionDetails![int.parse(newVal)].sessionId;
+
                                 }
                               });
-                              getTeacherData(divisionid: divisionData![int.parse(newVal)]['_id'],divisionCurriculumId: divisionData![int.parse(newVal)]['curriculum'] ,divisionSessionId: divisionData![int.parse(newVal)]['session'] );
+                              // getTeacherData(divisionid: divisionData![int.parse(newVal)]['_id'],divisionCurriculumId: divisionData![int.parse(newVal)]['curriculum'] ,divisionSessionId: divisionData![int.parse(newVal)]['session'] );
                             },
                             decoration: InputDecoration(
                                 hintStyle: TextStyle(
@@ -605,14 +462,14 @@ class _learningWalkState extends State<learningWalk> {
                                 ),
                                 fillColor: Color.fromRGBO(230, 236, 254, 8),
                                 filled: true),
-                            items: divisionData == null ? null : divisionData!
+                            items: divisionDetails == null ? null : divisionDetails!
                                     .map<DropdownMenuItem<String>>((item) {
                                     return DropdownMenuItem<String>(
-                                      value:  divisionData!
+                                      value:  divisionDetails!
                                           .indexOf(item)
                                           .toString(),
                                       child: Text(
-                                        'Division: ${item['name']}', maxLines: 1,
+                                        'Division: ${item.batch}', maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         // maxLines: 1,
                                       ),
@@ -631,8 +488,8 @@ class _learningWalkState extends State<learningWalk> {
                             onChanged: (dynamic newVal) {
                               setState(() {
                                 _teacherListSelected = newVal;
-                                selectedteacher_Name = teacherData![int.parse(newVal)]['name'];
-                                selectedteacher_Id = teacherData![int.parse(newVal)]['_id'];
+                                selectedteacher_Name = teacherDetails![int.parse(newVal)].name;
+                                selectedteacher_Id = teacherDetails![int.parse(newVal)].userId;
                               });
                             },
                             decoration: InputDecoration(
@@ -663,13 +520,13 @@ class _learningWalkState extends State<learningWalk> {
                                 ),
                                 fillColor: Color.fromRGBO(230, 236, 254, 8),
                                 filled: true),
-                            items: teacherData == null ? null : teacherData!
+                            items: teacherDetails == null ? null : teacherDetails!
                                 .map<DropdownMenuItem<dynamic>>((item) {
                               return DropdownMenuItem<dynamic>(
-                                value: teacherData!
+                                value: teacherDetails!
                                     .indexOf(item)
                                     .toString(),
-                                child: Text(item['name'],
+                                child: Text(item.name!,
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                 ),
@@ -691,6 +548,7 @@ class _learningWalkState extends State<learningWalk> {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 learningwalkIndicators(
+                                                  learningwalknew: widget.learningwalknew,
                                                   class_id: class_id,
                                                   class_Name: class_name,
                                                   session_Id: session_id,
@@ -699,6 +557,7 @@ class _learningWalkState extends State<learningWalk> {
                                                   division_name:division_name,
                                                   division_id:division_id,
                                                   selectedteacher_Id: selectedteacher_Id,
+                                                  selectedteacher_Name: selectedteacher_Name ?? '',
                                                   roleUnderLoginTeacher: widget
                                                       .roleUnderLoginTeacher,
                                                   teacherImage: teacherImage,
@@ -711,7 +570,7 @@ class _learningWalkState extends State<learningWalk> {
                                                   OB_ID: widget.OB_Id,
                                                   role_id: widget.role_id,
                                                   Image: widget.Image,
-                                                  selectedteacher_Name: selectedteacher_Name ?? '',
+
                                                   // subjectName:
                                                   //     _teacherSubjectSelected
                                                   //         .toString()
@@ -732,6 +591,7 @@ class _learningWalkState extends State<learningWalk> {
                                                   learningData:
                                                       widget.learningData,
                                                   value: _textController.text,
+                                                  loginRoleid: widget.loginRoleid,
                                                   // subject_id:
                                                   //     _teacherSubjectSelected
                                                   //         .toString()

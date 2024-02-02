@@ -133,10 +133,15 @@ class _observationResultState extends State<observationResult> {
     // print('------------api response---------------$response');
     ObservationData = response;
     ObservationDataList = response['data']['details'];
-    // if(response['data']['details'])
-    // for(int i = 0;i<ObservationDataList.length;i++){
-    //   if(ObservationDataList[i]['type'] == 'LW_NEW' )
-    // }
+    // ObservationDataList.sort((a, b) => a.date_of_observation.compareTo(b.date_of_observation));
+    ObservationDataList.sort((a, b) =>
+        DateTime.parse(b['date_of_observation']).compareTo(DateTime.parse(a['date_of_observation'])));
+
+    // Print the sorted list
+    ObservationDataList.forEach((observation) {
+      print("Date: ${observation['date_of_observation']}}");
+    });
+
     print('------------api response---------------$ObservationData');
     print('------------ObservationDataList---------------$ObservationDataList');
     if (ObservationDataList.isEmpty ) {

@@ -70,6 +70,7 @@ class _ChoicePageState extends State<ChoicePage> {
   var tname;
   var fcmToken;
   var firebase_tockenss;
+  List<dynamic> loginRoleid = [];
 
   Map<String, dynamic>? loginCredential;
 

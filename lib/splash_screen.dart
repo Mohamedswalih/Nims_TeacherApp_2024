@@ -39,6 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
     var hos = preferences.getString('hos');
     var user = preferences.getString('email');
     var academicYear = preferences.getString('academic_year');
+    await preferences.remove('learningwalknew');
     print(designation);
 
     print("the teacher is $teacher");

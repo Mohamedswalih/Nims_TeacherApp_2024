@@ -43,6 +43,7 @@ class lessonObservation extends StatefulWidget {
   List<dynamic>? teacherData;
   List<dynamic>? observationData;
   Map<String, dynamic>? lessonData;
+  List<dynamic> loginRoleid;
   lessonObservation({
     Key? key,
     this.Image,
@@ -50,6 +51,7 @@ class lessonObservation extends StatefulWidget {
     this.loginname,
     this.role_id,
     this.username,
+    required this.loginRoleid,
     this.userid,
     this.schoolid,
     this.academicyear,
@@ -618,6 +620,7 @@ class _lessonObservationState extends State<lessonObservation> {
                                                   _teacherSubjectSelected
                                                       .toString()
                                                       .split('/')[1],
+                                              loginRoleid: widget.loginRoleid,
                                             )));
                               } else {
                                 print('validation failed');

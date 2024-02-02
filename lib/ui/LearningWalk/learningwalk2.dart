@@ -17,6 +17,7 @@ import '../../Utils/color_utils.dart';
 import '../../Utils/navigation_utils.dart';
 import '../DrawerPageHOSLogin/drawer_page.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import '../Leadership/LearningWalk_Model.dart';
 import '../LoginPage/hoslisting.dart';
 import '../Rubrics/rubrics.dart';
 
@@ -54,10 +55,14 @@ class learningwalkIndicators extends StatefulWidget {
   List<dynamic>? teacherData;
   List<dynamic>? observationList;
   Map<String, dynamic>? learningData;
+  Learningwalknew? learningwalknew;
+  List<dynamic> loginRoleid;
   learningwalkIndicators(
       {Key? key,
       this.session_Id,
       this.division_id,
+      this.learningwalknew,
+      required this.loginRoleid,
       this.division_name,
       this.selectedteacher_Name,
       this.selectedteacher_Id,
@@ -127,11 +132,33 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
     });
   }
 
+  Learningwalknew? learningwalknew;
+  getdata() {
+
+
+    print("-----gcnhcfgnh2------${widget.learningwalknew!.data!.details!.lwfocus}");
+
+         focusoflwData = widget.learningwalknew!.data!.details!.lwfocus;
+    log('---------focusoflwData--${focusoflwData}');
+    if (widget.learningwalknew!.data!.details!.lwfocus!.isNotEmpty){
+      initialfocuslwdata =widget.learningwalknew!.data!.details!.lwfocus![0];
+      focusOfLearningwalkTextController.text = initialfocuslwdata!;
+    }
+    //     log('---------focusoflwData--${focusoflwData}');
+    //     if (decodedresp['data']['details'].isNotEmpty){
+    //       initialfocuslwdata =decodedresp['data']['details'][0];
+    //       focusOfLearningwalkTextController.text = initialfocuslwdata!;
+    // print(widget.teacherData);
+    // print(widget.teacherData![0]['teacher_name']);
+    //teacherName = widget.teacherData![0]['teacher_name'];
+  }
   getNotification() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var userID = preferences.getString('userID');
     rollidpref = preferences.getString("role_ids");
     rollidprefname = preferences.getStringList("role_name");
+    academicyear = preferences.getString('academic_year');
+    schoolId = preferences.getString('school_id');
     print('rollidpref---->$rollidpref');
     print('rollidpref---->$rollidprefname');
     print('rollidpref---->${rollidprefname}');
@@ -182,34 +209,16 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
     }
   }
 
-  void getlist() {
-    print(widget.teacherData);
-    questionData = widget.learningData;
-    // questionData!.forEach((key, value) {
-    //   print('questionnnnnnnnn$key - $value');
-    //
-    // });
-    questionData!['list'].forEach((vall) {
-      print(vall['values']);
-      vall['values'] = null;
-    });
-    // for (int i = 0;
-    // i < questionData!['list'].length;
-    // i++)
-    // questionData!['list'][i]['values'] = 0;
-    // print('${questionData!.forEach((key, value) { })}');
-    print('lengthof que------------>${questionData!.length}');
-    // print('-------------------------------------${widget.teacherName}');
-  }
 
-  getdata() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    schoolId = preferences.getString('school_id');
-    academicyear = preferences.getString("academic_year");
-    userId = preferences.getString('userID');
-    print('school data------------->${schoolId}');
-    print('academic data------------->${academicyear}');
-  }
+
+  // getdata() async {
+  //   SharedPreferences preferences = await SharedPreferences.getInstance();
+  //   schoolId = preferences.getString('school_id');
+  //   academicyear = preferences.getString("academic_year");
+  //   userId = preferences.getString('userID');
+  //   print('school data------------->${schoolId}');
+  //   print('academic data------------->${academicyear}');
+  // }
   var focusOfLearningwalkTextController = new TextEditingController();
   var questionstoaskPupilsTextController = new TextEditingController();
   var questionstoaskTeachersTextController = new TextEditingController();
@@ -289,48 +298,48 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
 
   List<dynamic>? focusoflwData;
   String? initialfocuslwdata;
-  focusoflw() async{
-    setState(() {
-      isSpinner = true;
-    });
-
-    var headers = {
-      'x-auth-token': 'tq355lY3MJyd8Uj2ySzm',
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    };
-
-    var request = http.Request('POST', Uri.parse(ApiConstants.FocusOfLearningWalk));
-    request.body =
-        json.encode({
-          "academic_year": widget.academicyear,
-          "user_id": widget.userid,
-        });
-    request.headers.addAll(headers);
-
-    print('---------focusoflwData--body--${request.body}');
-
-    http.StreamedResponse response = await request.send();
-
-    print('---------focusoflwData--statusCode--${response.statusCode}');
-    if (response.statusCode == 200) {
-      var resp = await response.stream.bytesToString();
-      var decodedresp = json.decode(resp);
-      focusoflwData = decodedresp['data']['details'];
-      log('---------focusoflwData--${focusoflwData}');
-      if (decodedresp['data']['details'].isNotEmpty){
-        initialfocuslwdata =decodedresp['data']['details'][0];
-        focusOfLearningwalkTextController.text = initialfocuslwdata!;
-      }
-
-      print('---------initialfocuslwdata--${initialfocuslwdata}');
-      print('---------selectedfocusofLW--${selectedfocusofLW}');
-
-      setState(() {
-        isSpinner = false;
-      });
-    }
-  }
+  // focusoflw() async{
+  //   setState(() {
+  //     isSpinner = true;
+  //   });
+  //
+  //   var headers = {
+  //     'x-auth-token': 'tq355lY3MJyd8Uj2ySzm',
+  //     'Content-Type': 'application/json',
+  //     'Accept': 'application/json'
+  //   };
+  //
+  //   var request = http.Request('POST', Uri.parse(ApiConstants.FocusOfLearningWalk));
+  //   request.body =
+  //       json.encode({
+  //         "academic_year": widget.academicyear,
+  //         "user_id": widget.userid,
+  //       });
+  //   request.headers.addAll(headers);
+  //
+  //   print('---------focusoflwData--body--${request.body}');
+  //
+  //   http.StreamedResponse response = await request.send();
+  //
+  //   print('---------focusoflwData--statusCode--${response.statusCode}');
+  //   if (response.statusCode == 200) {
+  //     var resp = await response.stream.bytesToString();
+  //     var decodedresp = json.decode(resp);
+  //     focusoflwData = decodedresp['data']['details'];
+  //     log('---------focusoflwData--${focusoflwData}');
+  //     if (decodedresp['data']['details'].isNotEmpty){
+  //       initialfocuslwdata =decodedresp['data']['details'][0];
+  //       focusOfLearningwalkTextController.text = initialfocuslwdata!;
+  //     }
+  //
+  //     print('---------initialfocuslwdata--${initialfocuslwdata}');
+  //     print('---------selectedfocusofLW--${selectedfocusofLW}');
+  //
+  //     setState(() {
+  //       isSpinner = false;
+  //     });
+  //   }
+  // }
 
   //Submit API
   SubmitRequest() async {
@@ -411,7 +420,8 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                 NavigationUtils.goNextFinishAll(
                                     context,
                                     hoslisting(
-                                      userID: userId,
+                                      userID: widget.userid,
+
                                       // loginedUserEmployeeNo: widget.loginEmployeeID,
                                       // designation: widget.designation,
                                       // schoolId: widget.schoolID,
@@ -429,7 +439,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                 NavigationUtils.goNextFinishAll(
                                     context,
                                     DrawerPageForHos(
-                                      userId: userId,
+                                      userId: widget.userid,
                                       roleUnderHos:
                                           widget.roleUnderLoginTeacher,
                                       // loginedUserEmployeeNo: widget.loginEmployeeID,
@@ -441,6 +451,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                       //academic_year: widget.academic_year,
                                       // roleUnderHos: employeeUnderHOS,
                                       //isAClassTeacher: newTeacherData,
+                                      loginRoleid: widget.loginRoleid,
                                     ));
                                 break;
                               }
@@ -528,14 +539,14 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getlist();
     getdata();
-    focusoflw();
+    // focusoflw();
     getNotification();
     timer =
         Timer.periodic(Duration(seconds: 1), (Timer t) => getPreferenceData());
     print('learning data--------------->${widget.learningData}');
     print('teacher name ------------->${widget.teacherName}');
+    print('loginname name ------------->${widget.loginname}');
     print('--------------rollid lw2------${widget.role_id}');
     print('--------------userid lw2------${widget.userid}');
     print('--------------userid lw2------${widget.roleUnderLoginTeacher}');
@@ -862,7 +873,8 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                       color: Colors.black.withOpacity(0.5),fontSize: 15),
                                   contentPadding: EdgeInsets.symmetric(
                                       vertical: 15.0, horizontal: 20.0),
-                                  hintText: "Select Focus Of Learning Walk",
+                                  hintText: _isDataEntered == false ? "Focus Of Learning Walk*" : null,
+                                  // labelText:! _isDataEntered == false ? "Focus Of Learning Walk*" : null,
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(10.0),
@@ -890,7 +902,8 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                   value:  focusoflwData!
                                       .indexOf(item)
                                       .toString(),
-                                  child: Text(
+                                  child:
+                                  Text(
                                     // ''
                                     '${item}',
                                     maxLines: 1,
@@ -909,7 +922,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                               controller: focusOfLearningwalkTextController,
                               maxLength: 1000,
                               validator: (val) => val!.isEmpty
-                                  ? '  *Focus Of Learning Walk is required'
+                                  ? '  Focus Of Learning Walk is required'
                                   : null,
                               decoration: InputDecoration(
                                   hintStyle: TextStyle(color: Colors.black26),
@@ -980,7 +993,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                 controller: questionstoaskPupilsTextController,
                                 maxLength: 1000,
                                 validator: (val) => val!.isEmpty
-                                    ? '  *Questions To Ask Pupils is required'
+                                    ? '  Questions To Ask Pupils is required'
                                     : null,
                                 decoration: InputDecoration(
                                     hintStyle: TextStyle(color: Colors.black26),
@@ -1027,7 +1040,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                 controller: questionstoaskTeachersTextController,
                                 maxLength: 1000,
                                 validator: (val) => val!.isEmpty
-                                    ? '  *Questions To Ask Teachers is required'
+                                    ? '  Questions To Ask Teachers is required'
                                     : null,
 
                                 decoration: InputDecoration(
@@ -1073,7 +1086,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                               controller: whatwentwellTextController,
                               maxLength: 1000,
                               validator: (val) => val!.isEmpty
-                                  ? '  *What Went Well is required'
+                                  ? '  What Went Well is required'
                                   : null,
 
                               decoration: InputDecoration(
@@ -1118,7 +1131,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                               controller: evenbetterifTextController,
                               maxLength: 1000,
                               validator: (val) => val!.isEmpty
-                                  ? '  *Even Better If is required'
+                                  ? '  Even Better If is required'
                                   : null,
 
                               decoration: InputDecoration(
@@ -1360,11 +1373,11 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
       });
       // print(QuestionDb);
       // String jsonData = jsonEncode(QuestionDb);
-      String roles = jsonEncode(widget.OB_ID);
+      // String roles = jsonEncode(widget.OB_ID);
       final note = Note(
     academic_year:academicyear,
     school_id:schoolId,
-    added_by:userId,
+    added_by:widget.userid,
     added_date:DateTime.now().toLocal().toString(),
     session_id:widget.session_Id,
     curriculum_id:widget.curriculam_Id,
@@ -1377,12 +1390,32 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
     qs_to_teacher:questionstoaskTeachersTextController.text.isEmpty ? "" : questionstoaskTeachersTextController.text,
     what_went_well:whatwentwellTextController.text.isEmpty ? "" : whatwentwellTextController.text,
     even_better_if:evenbetterifTextController.text.isEmpty ? "" : evenbetterifTextController.text,
-    sender_id:userId,
+    sender_id:widget.userid,
     observation_date : DateTime.now().toLocal().toString(),
     observer_roles :"${widget.role_id}",
     notes : remarksTextController.text.isEmpty ? "" : remarksTextController.text,
     app: 1,
     );
+      print('academic_year${note.academic_year}');
+      print('schoolId${note.school_id}');
+      print('added_by${note.added_by}');
+      print('added_date${note.added_date}');
+      print('session_id${note.session_id}');
+      print('curriculum_id${note.curriculum_id}');
+      print('class_id${note.class_id}');
+      print('batch_id${note.batch_id}');
+      print('teacher_id${note.teacher_id}');
+      print('teacher_name${note.teacher_name}');
+      print('lw_focus${note.lw_focus}');
+      print('qs_to_puple${note.qs_to_puple}');
+      print('qs_to_teacher${note.qs_to_teacher}');
+      print('what_went_well${note.what_went_well}');
+      print('even_better_if${note.even_better_if}');
+      print('sender_id${note.sender_id}');
+      print('observation_date${note.observation_date}');
+      print('observer_roles${note.observer_roles}');
+      print('notes${note.notes}');
+      print('app${note.app}');
       await NotesDatabase.instance.create(note);
       if (note == null) {
         _submitedfailed(context);
@@ -1442,11 +1475,12 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                         // print('rollidprefname[i]${rollidprefname[1]}');
                         print('rollidprefname[i]${rollidprefname[i]}');
                         if (rollidprefname[i] == 'Principal' ||
-                            rollidprefname[i] == 'Vice Principal') {
+                            rollidprefname[i] == 'Vice Principal'||
+                            rollidprefname[i] == 'Academic Co-ordinator') {
                           NavigationUtils.goNextFinishAll(
                               context,
                               hoslisting(
-                                userID: userId,
+                                userID: widget.userid,
                                 // loginedUserEmployeeNo: widget.loginEmployeeID,
                                 // designation: widget.designation,
                                 // schoolId: widget.schoolID,
@@ -1464,7 +1498,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                           NavigationUtils.goNextFinishAll(
                               context,
                               DrawerPageForHos(
-                                userId: userId,
+                                userId: widget.userid,
                                 roleUnderHos: widget.roleUnderLoginTeacher,
                                 // loginedUserEmployeeNo: widget.loginEmployeeID,
                                 // designation: widget.designation,
@@ -1475,6 +1509,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                                 //academic_year: widget.academic_year,
                                 // roleUnderHos: employeeUnderHOS,
                                 //isAClassTeacher: newTeacherData,
+                                loginRoleid: widget.loginRoleid,
                               ));
                           break;
                         }
@@ -1514,7 +1549,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                 NavigationUtils.goNextFinishAll(
                     context,
                     hoslisting(
-                      userID: userId,
+                      userID: widget.userid,
                       // loginedUserEmployeeNo: widget.loginEmployeeID,
                       // designation: widget.designation,
                       // schoolId: widget.schoolID,
@@ -1532,7 +1567,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                 NavigationUtils.goNextFinishAll(
                     context,
                     DrawerPageForHos(
-                      userId: userId,
+                      userId: widget.userid,
                       // loginedUserEmployeeNo: widget.loginEmployeeID,
                       // designation: widget.designation,
                       // schoolId: widget.schoolID,
@@ -1543,6 +1578,7 @@ class _learningwalkIndicatorsState extends State<learningwalkIndicators> {
                       //academic_year: widget.academic_year,
                       // roleUnderHos: employeeUnderHOS,
                       //isAClassTeacher: newTeacherData,
+                      loginRoleid: widget.loginRoleid,
                     ));
                 break;
               }

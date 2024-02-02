@@ -52,12 +52,14 @@ class lessonObservationPg2 extends StatefulWidget {
   List<dynamic>? observationList;
   Map<String, dynamic>? lessonData;
   Map<String, dynamic>? learningData;
+  List<dynamic> loginRoleid;
   lessonObservationPg2(
       {Key? key,
       required this.value,
       this.subject_id,
       this.observationList,
       this.classname,
+      required this.loginRoleid,
       this.Image,
       this.loginname,
       this.role_id,
@@ -345,6 +347,7 @@ class _lessonObservationPg2State extends State<lessonObservationPg2> {
                                       //academic_year: widget.academic_year,
                                       // roleUnderHos: employeeUnderHOS,
                                       //isAClassTeacher: newTeacherData,
+                                      loginRoleid: widget.loginRoleid,
                                     ));
                                 break;
                               }
@@ -1590,6 +1593,7 @@ class _lessonObservationPg2State extends State<lessonObservationPg2> {
                                 //academic_year: widget.academic_year,
                                 // roleUnderHos: employeeUnderHOS,
                                 //isAClassTeacher: newTeacherData,
+                                loginRoleid: widget.loginRoleid,
                               ));
                           break;
                         }

@@ -19,6 +19,7 @@ class ApiConstants {
   static String UPDATE_NOTIFICATION = "https://teamsqa3000.educore.guru/v0/notifications/update/status";
   static String Leadership = "https://teamsqa3000.educore.guru/v2/lesson_observation/init/data";
   static String LessonObservationSubmit = "https://teamsqa3000.educore.guru/v2/lesson_observation/submit_evaluation";
+  static String LearningWalkNew = "https://teamsqa3000.educore.guru/v0/learning_walk/get/all/teachers";
   static String LearningWalkClassList = "https://teamsqa3000.educore.guru/v0/get/lw/classes";
   static String LearningWalkdivisionList = "https://teamsqa3000.educore.guru/v0/get/batches";
   static String LearningWalkTeacherList = "https://teamsqa3000.educore.guru/v0/get/teachers";
@@ -59,6 +60,7 @@ class ApiConstants {
   // static String UPDATE_NOTIFICATION = "https://nims3000.educore.guru/v0/notifications/update/status";
   // static String Leadership = "https://nims3000.educore.guru/v2/lesson_observation/init/data";
   // static String LessonObservationSubmit = "https://nims3000.educore.guru/v2/lesson_observation/submit_evaluation";
+  // static String LearningWalkNew = "https://nims3000.educore.guru/v0/learning_walk/get/all/teachers";
   // static String LearningWalkClassList = "https://nims3000.educore.guru/v0/get/lw/classes";
   // static String LearningWalkdivisionList = "https://nims3000.educore.guru/v0/get/batches";
   // static String LearningWalkTeacherList = "https://nims3000.educore.guru/v0/get/teachers";

@@ -12,6 +12,8 @@ import '../../../exports.dart';
 import 'package:http/http.dart' as http;
 import 'package:badges/badges.dart' as badges;
 import '../DrawerPageHOSLogin/drawer_page.dart';
+import '../Leadership/LearningWalk_Model.dart';
+import '../LearningWalk/LearningWalk.dart';
 import '../LessonObservation/lessonobservation.dart';
 import 'login.dart';
 
@@ -29,10 +31,14 @@ class hoslisting extends StatefulWidget {
   var role_id;
   var loginedUserName;
   var loginname;
+  var loginroleid;
   var usermailid;
+  bool? admin;
   hoslisting(
       {this.images,
       this.role_id,
+      this.admin,
+      this.loginroleid,
       this.usermailid,
       this.loginedUserName,
       this.loginname,
@@ -73,6 +79,59 @@ class _hoslistingState extends State<hoslisting> {
   var loginname;
   var academicyear;
   var fcmToken;
+  List<dynamic> loginRoleid = [];
+  Learningwalknew _learningwalkApi = Learningwalknew();
+  LearningWalkLeadership() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var schoolID = preferences.getString('school_id');
+    setState(() {
+      isSpinner = true;
+    });
+    var headers = {
+      'x-auth-token': 'tq355lY3MJyd8Uj2ySzm',
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse(ApiConstants.LearningWalkNew));
+    request.body =
+        json.encode({"school_id": schoolID,"user_id": widget.userID, "academic_year": academicyear,});
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    print('---------Leadership--statusCode--${response.statusCode}');
+    print('---------Leadership--body--${request.body}');
+    if (response.statusCode == 200) {
+
+      print('load'
+          'inggggg');
+
+      var respnce = await response.stream.bytesToString();
+      var decodedrespnce = json.decode(respnce);
+      print('---------Leadership--decodedrespnce--${decodedrespnce}');
+      _learningwalkApi = Learningwalknew.fromJson(decodedrespnce);
+      print('---------_learningwalkApi--${_learningwalkApi.status!.message}');
+      await preferences.setString('learningwalknew', json.encode(decodedrespnce));
+
+    }
+
+  }
+
+  checkExists()async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? learningwalknew =  preferences.getString('learningwalknew');
+    var idlog = preferences.getString('role_ids');
+    print('idlogidlog$idlog');
+    loginRoleid = json.decode(idlog!);
+    if(learningwalknew != null){
+      _learningwalkApi = Learningwalknew.fromJson(json.decode(learningwalknew));
+
+      print('---------_learningwalkdb--${_learningwalkApi.status!.message}');
+    }else{
+      await LearningWalkLeadership();
+    }
+
+  }
   getPreferenceData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.setInt("count", Count);
@@ -600,9 +659,11 @@ class _hoslistingState extends State<hoslisting> {
 
   void initState() {
     print('widget.image......${widget.images}');
+    print('widget.image......${widget.loginroleid}');
     // getUserdata();
     // checkCache();
     getleaderdetails();
+    checkExists();
     // getUserLoginCredentials();
     getNotification();
     timer =
@@ -740,7 +801,7 @@ class _hoslistingState extends State<hoslisting> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: 200.h,
+                          height: 80.h,
                         ),
                         Center(
                             child: Text(
@@ -839,6 +900,7 @@ class _hoslistingState extends State<hoslisting> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               DrawerPageForHos(
+                                                loginRoleid:loginRoleid,
                                                 admin:true,
                                                 loginname: loginname,
                                                 userId: hosId,
@@ -889,6 +951,72 @@ class _hoslistingState extends State<hoslisting> {
                                         color: Colors.white, fontSize: 16.sp),
                                   ),
                                 )),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 50.h,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: 35.w, right: 35.w, top: 35.h),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => learningWalk(
+                                        roleUnderLoginTeacher: widget.role_id,
+                                        loginname:widget.loginname ?? widget.name,
+                                        image: widget.images,
+
+                                        // observationDataa:
+                                        // learningData!['list'],
+                                        // learningData: learningData,
+                                        role_id: widget.role_id,
+                                        userid: widget.userID,
+                                        admin:true,
+                                        learningwalknew: _learningwalkApi,
+                                        loginRoleid: loginRoleid,
+                                      )));
+                            },
+                            child: Container(
+                              height: 140.h,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Color(0xff14C6C6),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 60.h,
+                                    decoration: BoxDecoration(
+                                      border:
+                                      Border.all(color: Colors.transparent),
+                                    ),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 25.w),
+                                      child: Image(
+                                          image: AssetImage(
+                                              'assets/images/journalist 1.png')),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 15.w),
+                                    child: Container(
+                                      // height: 50.h,
+                                        width: 180.w,
+                                        child: Text(
+                                          "Learning Walk",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Color.fromRGBO(
+                                                  240, 236, 254, 8)),
+                                        )),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ],

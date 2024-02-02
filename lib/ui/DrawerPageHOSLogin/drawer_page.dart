@@ -35,13 +35,16 @@ class DrawerPageForHos extends StatefulWidget {
   var isAClassTeacher;
   var role_id;
   var loginname;
+  var loginroleid;
   bool? admin;
-
+  var loginRoleid;
   DrawerPageForHos(
       {Key? key,
       this.loginedUserName,
       this.loginname,
+      this.loginRoleid,
       this.admin,
+      this.loginroleid,
       this.HOSNAME,
       this.designation,
       this.userId,
@@ -192,6 +195,7 @@ class _DrawerPageForHosState extends State<DrawerPageForHos> {
           role_id: widget.role_id,
           Empcodee: employeeUnderHOS,
           admin:widget.admin,
+          loginRoleid: widget.loginRoleid ,
         );
       case MenuItems.Reports:
         return ReportListView(

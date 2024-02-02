@@ -48,6 +48,8 @@ class _LoginPageState extends State<LoginPage> {
   String? schoolIds;
   String? images;
   var designation = [];
+  var loginRoleid;
+
 
   List<String> rolename = [];
 
@@ -147,11 +149,12 @@ class _LoginPageState extends State<LoginPage> {
         var schoolId = loginData!["data"]["data"][0]["school_id"];
         var academic_year = loginData!["data"]["data"][0]["academic_year"];
         var rOLEID = loginData!["data"]["data"][0]["all_roles_array"];
+        loginRoleid = loginData!["data"]["data"][0]["role_ids"];
         rOLEID.forEach((e) {
           rolename.add(e['name']);
         });
 
-        print('---------ygt-----$rolename');
+        print('---------role_ids-----${loginData!["data"]["data"][0]["role_ids"]}');
         print(loginData!["data"]["data"][0]["all_roles_array"].length);
         print(
             'all rore login${loginData!["data"]["data"][0]["all_roles_array"].runtimeType}');
@@ -193,6 +196,7 @@ class _LoginPageState extends State<LoginPage> {
         preference.setString('academic_year', '$academic_year');
         preference.setString('role_ids', "$rOLEID");
         preference.setStringList('role_name', rolename);
+        preference.setString('role_ids', json.encode(loginRoleid));
         print('roll_ids--------->${loginData!["data"]["data"][0]["role_ids"]}');
         print('employee-------Numbers${employeeNumbers}');
         print('rOLEID-------rOLEID${rOLEID}');
@@ -213,6 +217,7 @@ class _LoginPageState extends State<LoginPage> {
               NavigationUtils.goNextFinishAll(
                   context,
                   hoslisting(
+                    loginroleid:loginData!["data"]["data"][0]["role_ids"],
                     userID: userIds,
                     loginEmployeeID: employeeNumbers,
                     designation: designation,
@@ -312,6 +317,7 @@ class _LoginPageState extends State<LoginPage> {
               NavigationUtils.goNextFinishAll(
                   context,
                   hoslisting(
+                    loginroleid:loginData!["data"]["data"][0]["role_ids"],
                     userID: userIds,
                     loginEmployeeID: employeeNumbers,
                     designation: designation,
@@ -415,6 +421,7 @@ class _LoginPageState extends State<LoginPage> {
               NavigationUtils.goNextFinishAll(
                   context,
                   hoslisting(
+                    loginroleid:loginData!["data"]["data"][0]["role_ids"],
                     userID: userIds,
                     loginEmployeeID: employeeNumbers,
                     designation: designation,
@@ -514,6 +521,7 @@ class _LoginPageState extends State<LoginPage> {
               NavigationUtils.goNextFinishAll(
                   context,
                   hoslisting(
+                    loginroleid:loginData!["data"]["data"][0]["role_ids"],
                     userID: userIds,
                     loginEmployeeID: employeeNumbers,
                     designation: designation,
@@ -671,6 +679,7 @@ class _LoginPageState extends State<LoginPage> {
         preference.setString('school_id', '$schoolIds');
         preference.setString('images', '$images');
         preference.setString('academic_year', '$academic_year');
+        preference.setString('role_ids', '$loginRoleid');
         //getUserLoginCredentials();
 
         if (schoolIds == "CPpbKPQTcuG97i3kv") {
@@ -688,6 +697,7 @@ class _LoginPageState extends State<LoginPage> {
               NavigationUtils.goNextFinishAll(
                   context,
                   hoslisting(
+                    loginroleid:loginData!["data"]["data"][0]["role_ids"],
                     userID: userIds,
                     loginEmployeeID: employeeNumbers,
                     designation: designation,
@@ -785,6 +795,7 @@ class _LoginPageState extends State<LoginPage> {
               NavigationUtils.goNextFinishAll(
                   context,
                   hoslisting(
+                    loginroleid:loginData!["data"]["data"][0]["role_ids"],
                     userID: userIds,
                     loginEmployeeID: employeeNumbers,
                     designation: designation,
@@ -882,6 +893,7 @@ class _LoginPageState extends State<LoginPage> {
               NavigationUtils.goNextFinishAll(
                   context,
                   hoslisting(
+                    loginroleid:loginData!["data"]["data"][0]["role_ids"],
                     userID: userIds,
                     loginEmployeeID: employeeNumbers,
                     designation: designation,
@@ -980,6 +992,7 @@ class _LoginPageState extends State<LoginPage> {
               NavigationUtils.goNextFinishAll(
                   context,
                   hoslisting(
+                    loginroleid:loginData!["data"]["data"][0]["role_ids"],
                     userID: userIds,
                     loginEmployeeID: employeeNumbers,
                     designation: designation,

@@ -20,6 +20,7 @@ import '../../Network/api_constants.dart';
 import '../../Utils/color_utils.dart';
 import '../LearningWalk/LearningWalk.dart';
 import '../LessonObservation/lessonobservation.dart';
+import 'LearningWalk_Model.dart';
 
 class LeadershipListView extends StatefulWidget {
   var roleUnderLoginTeacher;
@@ -31,11 +32,14 @@ class LeadershipListView extends StatefulWidget {
   var role_id;
   var loginname;
   var Empcodee;
+  // var loginroleid;
+  var loginRoleid;
   bool? admin;
   LeadershipListView(
       {Key? key,
       this.roleUnderLoginTeacher,
       this.teachername,
+      this.loginRoleid,
       this.admin,
       this.loginname,
       this.role_id,
@@ -56,7 +60,7 @@ class _LeadershipListViewState extends State<LeadershipListView> {
   bool isSpinner = false;
   Map<String, dynamic>? loginData;
   Map<String, dynamic>? observationData;
-  Map<String, dynamic>? learningData;
+  // Map<String, dynamic>? learningData;
   Map<String, dynamic>? lessonData;
   //late List<Note> notes;
   //late List<Lesson> not;
@@ -69,7 +73,10 @@ class _LeadershipListViewState extends State<LeadershipListView> {
   final drawerController = ZoomDrawerController();
   var getprefernce;
   var getdata ;
+  var loginRoleId ;
+
   var academicyear;
+  Learningwalknew _learningwalkApi = Learningwalknew();
 
 
   //For Learning Walk Sql
@@ -84,6 +91,63 @@ class _LeadershipListViewState extends State<LeadershipListView> {
     this.not = await LessonDatabase.instance.readAllNotes();
     print('lesson obs db length-------${not!.length}');
    // print(not!.first.teachername);
+  }
+  LearningWalkLeadership() async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var schoolID = preferences.getString('school_id');
+
+    setState(() {
+      isSpinner = true;
+    });
+    var headers = {
+      'x-auth-token': 'tq355lY3MJyd8Uj2ySzm',
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    };
+    var request = http.Request('POST', Uri.parse(ApiConstants.LearningWalkNew));
+    request.body =
+        json.encode({"school_id": schoolID,"user_id": widget.usrId, "academic_year": academicyear,});
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    print('---------Leadership--statusCode--${response.statusCode}');
+    if (response.statusCode == 200) {
+
+      print('load'
+          'inggggg');
+
+      var respnce = await response.stream.bytesToString();
+      var decodedrespnce = json.decode(respnce);
+      print('---------Leadership--decodedrespnce--${decodedrespnce}');
+      _learningwalkApi = Learningwalknew.fromJson(decodedrespnce);
+      print('---------_learningwalkApi--${_learningwalkApi.status!.message}');
+      await preferences.setString('learningwalknew', json.encode(decodedrespnce));
+
+    }
+
+  }
+
+  checkExists()async{
+    setState(() {
+      isSpinner = true;
+    });
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String? learningwalknew =  preferences.getString('learningwalknew');
+
+    var idlog = preferences.getString('role_ids');
+    print('idlogidlog$idlog');
+    loginRoleId = json.decode(idlog!);
+    if(learningwalknew != null){
+      _learningwalkApi = Learningwalknew.fromJson(json.decode(learningwalknew));
+
+      print('---------_learningwalkdb--${_learningwalkApi.status!.message}');
+    }else{
+     await LearningWalkLeadership();
+    }
+    setState(() {
+      isSpinner = false;
+    });
   }
 
   //Submission for learning_walk
@@ -224,6 +288,7 @@ class _LeadershipListViewState extends State<LeadershipListView> {
   Future getUserdata() async {
     SharedPreferences preference = await SharedPreferences.getInstance();
     await APICacheManager().deleteCache("loginApiResp");
+
     setState(() {
       isSpinner = true;
     });
@@ -260,43 +325,17 @@ class _LeadershipListViewState extends State<LeadershipListView> {
         var resp = await response.stream.bytesToString();
         var decodedresp = json.decode(resp);
         preference.setString('leadershipAPI', json.encode(decodedresp));
-        // var isCacheExist = await APICacheManager().isAPICacheKeyExist(
-        //     "loginApiResp");
-        // print('cache--------------$isCacheExist');
 
-        // APICacheDBModel cacheDBModel = APICacheDBModel(
-        //     key: "loginApiResp", syncData: json.encode(decodedresp));
-        // await APICacheManager().addCacheData(cacheDBModel).then((value) {
-        //   print('is exxist ---------->$value');
-        //  // cacheSecondary = value;
-        //
-        // });
-
-
-        // getprefernce = preference.getString('leadershipAPI');
-        // getdata = jsonDecode(getprefernce);
-        //log("api preferencessss-----$getprefernce");
-        // var isCacheExist =
-        // await APICacheManager().isAPICacheKeyExist("loginApiResp");
-        // print('cache exist111 ---------$isCacheExist');
         loginData = decodedresp['data']['details'];
         observationData = decodedresp['data']['details']["lesson_observations"];
-        learningData = decodedresp['data']['details']["learning_walk"];
+        // learningData = decodedresp['data']['details']["learning_walk"];
         lessonData = decodedresp['data']['details']["lesson_observations"];
-        // print('run login-------->${getprefernce.runtimeType}');
-        // print('run data-------->${getdata.runtimeType}');
-        // loginData = getdata['data']['details'];
-        // observationData = getdata['data']['details']["lesson_observations"];
-        // learningData = getdata['data']['details']["learning_walk"];
-        // lessonData = getdata['data']['details']["lesson_observations"];
 
 
         print('login data----$loginData');
         print('login lessonData----$lessonData');
-        // print(observationData);
         print(observationData!['list']);
         print(observationData!['list'].runtimeType);
-        // print('cache exist twi---------$isCacheExist');
         setState(() {
           isSpinner = false;
         });
@@ -307,7 +346,6 @@ class _LeadershipListViewState extends State<LeadershipListView> {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Something went wrong')));
       }
-      //print(await response.stream.bytesToString());
 
     }
   }
@@ -333,29 +371,19 @@ class _LeadershipListViewState extends State<LeadershipListView> {
      var gedata = jsonDecode(getrefernce!);
       loginData = gedata['data']['details'];
       observationData = gedata['data']['details']["lesson_observations"];
-      learningData = gedata['data']['details']["learning_walk"];
+      // learningData = gedata['data']['details']["learning_walk"];
       lessonData = gedata['data']['details']["lesson_observations"];
       // print('login data type${loginData!['response'].runtimeType}');
       print('login data loginData$loginData');
       print('observationDatatype$observationData');
 
     }
-    // print('cache------leadership--------$isCacheExist');
-    // if (!isCacheExist) {
-    //   getUserdata();
-    // } else {
-      // var CacheData = await APICacheManager().getCacheData("loginApiResp");
-      // var decodedresp = json.decode(CacheData.syncData);
-      // loginData = decodedresp['data']['details'];
-      // observationData = decodedresp['data']['details']["lesson_observations"];
-      // learningData = decodedresp['data']['details']["learning_walk"];
-      // lessonData = decodedresp['data']['details']["lesson_observations"];
-      // print('login data type${loginData!['response'].runtimeType}');
+
 
       print('logggg--------$loginData');
-      print('learningDatacache--------$learningData');
+      // print('learningDatacache--------$learningData');
       print('lessonDatacache--------$lessonData');
-    // }
+
   }
 
   getPreferenceData() async {
@@ -432,7 +460,7 @@ class _LeadershipListViewState extends State<LeadershipListView> {
   @override
   void initState() {
     print('empid in leadership${widget.roleUnderLoginTeacher}');
-    print('usrId in leadership${widget.usrId}');
+    print('role_id in role_id${widget.loginRoleid}');
     // print('-------------------LearningData-----------${learningData}');
     // print('-------------------LessonData-----------${lessonData}');
     // print('-------------------ObservationData-----------${observationData}');
@@ -442,6 +470,7 @@ class _LeadershipListViewState extends State<LeadershipListView> {
     //refreshNotes();
     _checkNewVersion();
     getleaderdetails();
+    checkExists();
     //checkCache();
     //getUserdata();
     getNotification();
@@ -608,6 +637,7 @@ class _LeadershipListViewState extends State<LeadershipListView> {
                                                   lessonData!['list'],
                                               lessonData: lessonData,
                                               role_id: widget.role_id,
+                                          loginRoleid: widget.loginRoleid ?? loginRoleId,
                                             )));
                               } else {
                                 // setState(() {
@@ -659,12 +689,16 @@ class _LeadershipListViewState extends State<LeadershipListView> {
                             ),
                           ),
                         ),
+                        (( loginRoleId as List<dynamic>).contains('rolepri12')  ||
+                            (loginRoleId as List<dynamic>).contains('role12123')||
+                            (loginRoleId as List<dynamic>).contains('62690f2b15f336042ba786786')
+                        )
+                            ?Container():
                         Padding(
                           padding: EdgeInsets.only(
                               left: 35.w, right: 35.w, top: 35.h),
                           child: GestureDetector(
                             onTap: () {
-                              if (learningData != null) {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -675,19 +709,15 @@ class _LeadershipListViewState extends State<LeadershipListView> {
                                               image: widget.image,
                                               // teacherData:
                                               //     loginData!['response'],
-                                              observationDataa:
-                                                  learningData!['list'],
-                                              learningData: learningData,
+                                              // observationDataa:
+                                              //     learningData!['list'],
+                                              // learningData: learningData,
                                               role_id: widget.role_id,
                                               userid: widget.usrId,
                                                admin:widget.admin,
+                                          learningwalknew: _learningwalkApi,
+                                          loginRoleid: widget.loginRoleid ?? loginRoleId,
                                             )));
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content:
-                                            Text('Cannot fetch teacher data')));
-                              }
                             },
                             child: Container(
                               height: 140.h,
